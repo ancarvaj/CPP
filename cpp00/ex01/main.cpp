@@ -1,49 +1,71 @@
 #include "PhoneBook.hpp"
 
-Contact	ft_add_contact()
+std::string	get_contact_field(const std::string field)
 {
-	Contact cont;
 	std::string str;
 
-	std::cout << "name of the contact: ";
-	std::cin >> str;
-	std::cout << std::endl;
-	cont.setName(str);
-	std::cout << "last name of the contact: ";
-	std::cin >> str;
-	std::cout << std::endl;
-	cont.setLastName(str);
-	std::cout << "nickname of the contact: ";
-	std::cin >> str;
-	std::cout << std::endl;
-	cont.setNickname(str);
-	std::cout << "dark secret of the contact: ";
-	std::cin >> str;
-	std::cout << std::endl;
-	cont.setDarkSecret(str);
-	return (cont);
+	std::cout << field;
+	getline(std::cin, str);
+	return (str);
 }
 
-void display(std::string str)
+int	ft_add_contact(Contact *con)
 {
-	std::cout << str << std::endl;
+	
+	con->setName(get_contact_field("Name: "));
+	if (!con->getName().compare(""))
+		return (1);
+	con->setLastName(get_contact_field("Last Name: "));
+	if (!con->getLastName().compare(""))
+		return (1);
+	con->setNickname(get_contact_field("Nickname: "));
+	if (!con->getNickname().compare(""))
+		return (1);
+	con->setPhoneNumber(get_contact_field("Phone Number: "));
+	if (!con->getPhoneNumber().compare(""))
+		return (1);
+	con->setDarkSecret(get_contact_field("Darkest secret: "));
+	if (!con->getDarkSecret().compare(""))
+		return (1);
+	return (0);
 }
 
-int main(void)
+void	ft_search_contact(PhoneBook book)
 {
-	std::string	str;
-	PhoneBook	book;
+	int	i = -1;
+	while (++i < 8 && book.getContact(i).getName().compare(""))
+		std::cout <<  book.getContact(i).getName() << std::endl;
+}
 
-	while (str.compare("EXIT"))
+int	main(void)
+{
+	int	i = 0;
+	std::string str;
+	Contact	contact;
+	PhoneBook book;
+
+	while (1)
 	{
-		std::cin >> str;
+		getline(std::cin, str);
+		if (i > 7)
+			i = 0;
 		if (!str.compare("ADD"))
 		{
-			book.setContact(ft_add_contact(), 0);
-			display(book.getContact(0).getName());
+			if (!ft_add_contact(&contact))
+			{
+				book.setContact(contact, i);
+				i++;
+			}
+			else
+				std::cout << "Empty field\n";
 		}
-		//if (!str.compare("SEARCH"))
-		//	ft_search();
+		else if (!str.compare("SEARCH"))
+			ft_search_contact(book);
+		else if (!str.compare("EXIT"))
+			break ;
+		else
+			std::cout << "COMMANDS: ADD, SEARCH, EXIT\n";
+
 	}
 	return (0);
 }

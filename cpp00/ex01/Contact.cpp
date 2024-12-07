@@ -20,7 +20,7 @@ std::string Contact::getDarkSecret()
 	return (dark_secret);
 }
 
-size_t	Contact::getPhoneNumber()
+std::string	Contact::getPhoneNumber()
 {
 	return (phone_number);
 }
@@ -45,7 +45,7 @@ void	Contact::setDarkSecret(std::string str)
 	dark_secret = str;
 }
 
-void	Contact::setPhoneNumber(size_t number)
+void	Contact::setPhoneNumber(std::string number)
 {
 	phone_number = number;
 }
