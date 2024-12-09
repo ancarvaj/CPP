@@ -1,5 +1,23 @@
 #include "PhoneBook.hpp"
 #include <iomanip>
+#include <limits>
+
+int	cin_status()
+{
+	int	user = 0;
+	while (1)
+	{
+		std::cin >> user;
+		if (std::cin.fail())
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "Not a number, try again\n";
+		}
+		else
+			return (user);
+	}
+}
 
 std::string	get_contact_field(const std::string field)
 {
@@ -10,7 +28,7 @@ std::string	get_contact_field(const std::string field)
 	return (str);
 }
 
-int	ft_add_contact(Contact *con)
+int	add_contact(Contact *con)
 {
 	std::cout << std::endl;
 	con->setName(get_contact_field("Name: "));
@@ -32,7 +50,7 @@ int	ft_add_contact(Contact *con)
 	return (0);
 }
 
-void	display_contact(PhoneBook book, int index)
+void	display_specific_contact(PhoneBook book, int index)
 {
 	std::cout << std::endl;
 	std::cout << book.getContact(index).getName() << std::endl;
@@ -48,31 +66,24 @@ void	cout_len(std::string str, int len)
 	std::cout << std::setw(len) << std::right << str.substr(0, 10) << "|";
 }
 
-int	user_contact_interface(int i, PhoneBook book)
+int	search_specific_contact(PhoneBook book)
 {
+	int i = 0;
 	std::cout << "\nWhich contact do you want to see?\nenter a number betwen 1 and 8\n";
 	std::cout << "if you dont want to see a specific contact enter the number 0\n\n";
-	std::cin >> i;
-	if (i == 0)
-	{
-		std::cout << "exitig...\n\n";
-		return 1;
-	}
+	i = cin_status();
 	while (i < 1 || i  > 8 || !book.getContact(i - 1).getName().compare(""))
 	{
+		if (i == 0)
+			return 1;
 		std::cout << "Wrong contact, enter a new one\n";
 		std::cin >> i;
-		if (i == 0)
-		{
-			std::cout << "exitig...\n\n";
-			return 1;
-		}
 	}
-	display_contact(book, i - 1);
+	display_specific_contact(book, i - 1);
 	return (0);
 }
 
-void	ft_search_contact(PhoneBook book)
+void	display_book(PhoneBook book)
 {
 	int	i = -1;
 
@@ -85,8 +96,10 @@ void	ft_search_contact(PhoneBook book)
 		cout_len(book.getContact(i).getNickname(), 10);
 		std::cout << std::endl;
 	}
-	if (user_contact_interface(0, book))
-		return ;
+}
+
+void	display_again(PhoneBook book)
+{
 	std::string user;
 	while (user.compare("no"))
 	{
@@ -95,12 +108,19 @@ void	ft_search_contact(PhoneBook book)
 		std::cout << std::endl;
 		if (!user.compare("yes"))
 		{
-			if (user_contact_interface(0, book))
+			if (search_specific_contact(book))
 				return ;
 		}
 		else
 			continue ;
 	}
+}
+
+void	search_contact(PhoneBook book)
+{
+	display_book(book);
+	if (!search_specific_contact(book))
+		display_again(book);
 	std::cout << std::endl;
 }
 
@@ -118,7 +138,7 @@ int	main(void)
 			i = 0;
 		if (!str.compare("ADD"))
 		{
-			if (!ft_add_contact(&contact))
+			if (!add_contact(&contact))
 			{
 				book.setContact(contact, i);
 				i++;
@@ -127,15 +147,13 @@ int	main(void)
 				std::cout << "Empty field\n\n";
 		}
 		else if (!str.compare("SEARCH"))
-			ft_search_contact(book);
+			search_contact(book);
 		else if (!str.compare("EXIT"))
-		{
-			std::cout << "\nExiting program successfully\n\n";
 			break ;
-		}
 		else
 			std::cout << "COMMANDS: ADD, SEARCH, EXIT\n\n";
 
 	}
+	std::cout << "\nExiting program successfully\n\n";
 	return (0);
 }
