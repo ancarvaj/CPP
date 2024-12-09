@@ -1,4 +1,5 @@
 #include "PhoneBook.hpp"
+#include <iomanip>
 
 std::string	get_contact_field(const std::string field)
 {
@@ -30,11 +31,24 @@ int	ft_add_contact(Contact *con)
 	return (0);
 }
 
+void	cout_len(std::string str, int len)
+{
+	if (str.length() >= 10)
+		str = str.replace(9, 10, ".");
+	std::cout << std::setw(len) << std::right << str.substr(0, 10) << "|";
+}
+
 void	ft_search_contact(PhoneBook book)
 {
 	int	i = -1;
 	while (++i < 8 && book.getContact(i).getName().compare(""))
-		std::cout <<  book.getContact(i).getName() << std::endl;
+	{
+		std::cout << std::setw(10) << std::right << i + 1 << "|";
+		cout_len(book.getContact(i).getName(), 10);
+		cout_len(book.getContact(i).getLastName(), 10);
+		cout_len(book.getContact(i).getNickname(), 10);
+		std::cout << std::endl;
+	}
 }
 
 int	main(void)
